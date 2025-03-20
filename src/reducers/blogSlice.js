@@ -17,7 +17,23 @@ const initialState = [
 const blogsSlice = createSlice({
     name: "blogs",
     initialState: initialState,
-    reducers: {},
+    reducers: {
+        blogAdded: {
+            reducer(state, action) {
+                state.push(action.payload);
+            },
+            prepare(title, content) {
+                return {
+                    payload: {
+                        id: nanoid(),
+                        date: new Date().toISOString(),
+                        title,
+                        content,
+                    },
+                };
+            },
+        },
+    },
 });
-
+export const { blogAdded } = blogsSlice.actions;
 export default blogsSlice.reducer;

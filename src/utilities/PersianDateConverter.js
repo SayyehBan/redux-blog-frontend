@@ -3,7 +3,8 @@ import { format, parse } from "date-fns-jalali";
 // تبدیل میلادی به شمسی و بعد به شاهنشاهی
 export const miladiToShamsiAndShahanshahi = (miladiDate, formatType = 1) => {
     // تبدیل میلادی به شمسی با date-fns-jalali
-    const shamsiDate = format(miladiDate, "yyyy/MM/dd");
+    const dateObject = typeof miladiDate === 'string' ? new Date(miladiDate) : miladiDate;
+    const shamsiDate = format(dateObject, "yyyy/MM/dd");
 
     // پارس تاریخ شمسی
     const [shamsiYear, shamsiMonth, shamsiDay] = shamsiDate.split("/").map(Number);
@@ -35,7 +36,7 @@ export const miladiToShamsiAndShahanshahi = (miladiDate, formatType = 1) => {
         4: "پنج‌شنبه",
         5: "جمعه",
         6: "شنبه",
-    }[miladiDate.getDay()] || "";
+    }[dateObject.getDay()] || "";
 
     // فرمت خروجی
     const outputFormat = {

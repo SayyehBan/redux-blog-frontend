@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import HeaderTitle from "./HeaderTitle";
+import HeaderTitle from "../components/HeaderTitle";
 
 const SingleBlogPage = () => {
   const { blogId } = useParams();

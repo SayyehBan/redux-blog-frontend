@@ -84,7 +84,8 @@ nav a:hover {
 .navContent {
   display: flex;
   justify-content: space-between;
-  direction:ltr;
+  direction:rtl;
+
 }
 
 .navLinks {

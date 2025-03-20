@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import HeaderTitle from "../components/HeaderTitle";
 
 const SingleBlogPage = () => {
@@ -18,11 +18,16 @@ const SingleBlogPage = () => {
   return (
     <>
       <HeaderTitle title={blogId} />
-
+      <Link to="/" className="btn">
+        بازگشت به صفحه اصلی
+      </Link>
       <section>
         <article className="blog">
           <h2>{blog.title}</h2>
           <p className="blog-content">{blog.content}</p>
+          <Link to={`/editBlog/${blog.id}`} className="btn">
+            ویرایش پست
+          </Link>
         </article>
       </section>
     </>

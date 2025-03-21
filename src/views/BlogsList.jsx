@@ -8,10 +8,13 @@ const BlogsList = () => {
   const blogs = useSelector(selectAllBlogs);
 
   const navigate = useNavigate();
-  const renderBlogs = blogs.map((blog) => (
+  const orderedBlogs = blogs
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date));
+  const renderBlogs = orderedBlogs.map((blog) => (
     <article key={blog.id} className="blog-excerpt">
       <h3>{blog.title}</h3>
-      <div style={{ marginTop: "10px" }}>
+      <div style={{ marginTop: "10px", marginRight: "20px" }}>
         <ShowTime timestamp={blog.date} />
         <br />
         {miladiToShamsiAndShahanshahi(blog.date.split("T")[0], 1)}

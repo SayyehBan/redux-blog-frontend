@@ -12,7 +12,7 @@ const initialState = [
         id: nanoid(),
         date: sub(new Date(), { minutes: 1 }).toISOString(),
         title: "دومین پست",
-        content: "دومین پست ما میباشد سلام دنیا 🤗",
+        content: "دومین پست ما میباشد درود دنیا 🤗",
     },
 ];
 const blogsSlice = createSlice({

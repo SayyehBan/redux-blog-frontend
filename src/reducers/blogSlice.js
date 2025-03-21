@@ -4,16 +4,25 @@ import { sub } from "date-fns-jalali";
 const initialState = [
     {
         id: nanoid(),
-        date: sub(new Date(), { minutes: 10 }).toISOString(),
+        date: sub(new Date(), { days: 5, hours: 3, minutes: 10 }).toISOString(),
         title: "اولین پست",
         content: "محتوای اولین پست ما ☺️",
+        user: 1
+    },
+    {
+        id: nanoid(),
+        date: sub(new Date(), { minutes: 5 }).toISOString(),
+        title: "دومین پست",
+        content: "دومین پست ما میباشد درود دنیا 🤗",
+        user: 2
     },
     {
         id: nanoid(),
         date: sub(new Date(), { minutes: 1 }).toISOString(),
-        title: "دومین پست",
-        content: "دومین پست ما میباشد درود دنیا 🤗",
-    },
+        title: "سومین پست",
+        content: "سومین پست ما میباشد درود دنیا 🤗",
+        user: 3
+    }
 ];
 const blogsSlice = createSlice({
     name: "blogs",

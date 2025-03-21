@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { miladiToShamsiAndShahanshahi } from "../utilities/PersianDateConverter";
 import { selectAllBlogs } from "../reducers/blogSlice";
 import ShowTime from "../components/ShowTime";
+import ShowAuthor from "../components/ShowAuthor";
 
 const BlogsList = () => {
   const blogs = useSelector(selectAllBlogs);
@@ -18,6 +19,8 @@ const BlogsList = () => {
         <ShowTime timestamp={blog.date} />
         <br />
         {miladiToShamsiAndShahanshahi(blog.date.split("T")[0], 1)}
+        <br />
+        <ShowAuthor userId={blog.user} />
       </div>
 
       <p className="blog-content">{blog.content.substring(0, 100)}</p>

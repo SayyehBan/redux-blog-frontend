@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
 import { data, Link, useNavigate } from "react-router-dom";
 import { miladiToShamsiAndShahanshahi } from "../utilities/PersianDateConverter";
+import { selectAllBlogs } from "../reducers/blogSlice";
 
 const BlogsList = () => {
-  const blogs = useSelector((state) => state.blogs);
+  const blogs = useSelector(selectAllBlogs);
 
   const navigate = useNavigate();
   const renderBlogs = blogs.map((blog) => (

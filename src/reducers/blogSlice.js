@@ -39,10 +39,18 @@ const blogsSlice = createSlice({
             if (existingBlog) {
                 existingBlog.title = title;
                 existingBlog.content = content;
-
             }
+        },
+        blogDeleted: (state, action) => {
+            const { id } = action.payload;
+            state = state.filter((blog) => blog.id !== id);
+            return state;
+
         }
     },
 });
-export const { blogAdded, blogUpdated } = blogsSlice.actions;
+export const selectAllBlogs = (state) => state.blogs;
+export const selectBlogById = (state, blogId) =>
+    state.blogs.find((blog) => blog.id === blogId);
+export const { blogAdded, blogUpdated, blogDeleted } = blogsSlice.actions;
 export default blogsSlice.reducer;

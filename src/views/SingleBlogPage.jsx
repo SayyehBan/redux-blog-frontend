@@ -1,12 +1,14 @@
-import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import HeaderTitle from "../components/HeaderTitle";
+import { blogDeleted, selectBlogById } from "../reducers/blogSlice";
 
 const SingleBlogPage = () => {
   const { blogId } = useParams();
-  const blog = useSelector((state) =>
-    state.blogs.find((blog) => blog.id === blogId)
-  );
+  const blog = useSelector((state) => selectBlogById(state, blogId));
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   if (!blog) {
     return (
       <>
@@ -15,6 +17,15 @@ const SingleBlogPage = () => {
       </>
     );
   }
+  const handleDelete = () => {
+    if (blog) {
+      if (window.confirm("آیا از حذف این پست اطمینان دارید؟")) {
+        dispatch(blogDeleted({ id: blog.id }));
+
+        navigate("/");
+      }
+    }
+  };
   return (
     <>
       <HeaderTitle title={blogId} />
@@ -28,6 +39,9 @@ const SingleBlogPage = () => {
           <Link to={`/editBlog/${blog.id}`} className="btn">
             ویرایش پست
           </Link>
+          <button onClick={handleDelete} className="btn btn-danger">
+            حذف پست
+          </button>
         </article>
       </section>
     </>

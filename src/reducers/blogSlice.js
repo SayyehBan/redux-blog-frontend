@@ -1,15 +1,16 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { sub } from "date-fns-jalali";
 
 const initialState = [
     {
         id: nanoid(),
-        date: new Date().toISOString(),
+        date: sub(new Date(), { minutes: 10 }).toISOString(),
         title: "اولین پست",
         content: "محتوای اولین پست ما ☺️",
     },
     {
         id: nanoid(),
-        date: new Date().toISOString(),
+        date: sub(new Date(), { minutes: 1 }).toISOString(),
         title: "دومین پست",
         content: "دومین پست ما میباشد سلام دنیا 🤗",
     },

@@ -4,6 +4,7 @@ import { miladiToShamsiAndShahanshahi } from "../utilities/PersianDateConverter"
 import { selectAllBlogs } from "../reducers/blogSlice";
 import ShowTime from "../components/ShowTime";
 import ShowAuthor from "../components/ShowAuthor";
+import ReactionButton from "../components/ReactionButton";
 
 const BlogsList = () => {
   const blogs = useSelector(selectAllBlogs);
@@ -24,6 +25,7 @@ const BlogsList = () => {
       </div>
 
       <p className="blog-content">{blog.content.substring(0, 100)}</p>
+      <ReactionButton blog={blog} />
       <Link to={`/blogs/${blog.id}`} className="button muted-button">
         ادامه مطلب
       </Link>

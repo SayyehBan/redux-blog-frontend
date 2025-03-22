@@ -4,6 +4,7 @@ import HeaderTitle from "../components/HeaderTitle";
 import { blogDeleted, selectBlogById } from "../reducers/blogSlice";
 import ShowAuthor from "../components/ShowAuthor";
 import ShowTime from "../components/ShowTime";
+import ReactionButton from "../components/ReactionButton";
 
 const SingleBlogPage = () => {
   const { blogId } = useParams();
@@ -41,11 +42,12 @@ const SingleBlogPage = () => {
             <ShowTime timestamp={blog.date} />
             <ShowAuthor userId={blog.user} />
           </div>
-
           <p className="blog-content">{blog.content}</p>
+          <ReactionButton blog={blog} />
           <Link to={`/editBlog/${blog.id}`} className="btn">
             ویرایش پست
           </Link>
+          &nbsp;
           <button onClick={handleDelete} className="btn btn-danger">
             حذف پست
           </button>

@@ -1,27 +1,35 @@
 import { useState } from "react";
 import HeaderTitle from "../components/HeaderTitle";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { blogAdded } from "../reducers/blogSlice";
 import { useNavigate } from "react-router-dom";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-
+  const [userId, setUserId] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const users = useSelector((state) => state.users);
+
   const onTitleChange = (e) => {
     setTitle(e.target.value);
   };
   const onContentChange = (e) => {
     setContent(e.target.value);
   };
+  const onAuthorChange = (e) => {
+    setUserId(e.target.value);
+  };
+  const canSave = [title, content, userId].every(Boolean);
   const handleSubmitForm = (e) => {
     e.preventDefault();
-    if (title && content) {
-      dispatch(blogAdded(title, content));
+    if (canSave) {
+      dispatch(blogAdded(title, content, userId));
       setTitle("");
       setContent("");
+      setUserId();
       navigate("/");
     }
   };
@@ -38,6 +46,16 @@ const CreateBlogForm = () => {
           value={title}
           onChange={onTitleChange}
         />
+        <label htmlFor="blogAuthor">نویسنده :</label>
+        <select id="blogAuthor" value={userId} onChange={onAuthorChange}>
+          <option value="">انتخاب کنید</option>
+          {users.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.firstName} {user.lastName}
+            </option>
+          ))}
+        </select>
+
         <label htmlFor="blogContent">محتوا اصلی : </label>
         <textarea
           id="blogContent"
@@ -45,7 +63,7 @@ const CreateBlogForm = () => {
           value={content}
           onChange={onContentChange}
         />
-        <button type="button" onClick={handleSubmitForm}>
+        <button type="button" onClick={handleSubmitForm} disabled={!canSave}>
           ثبت پست
         </button>
       </form>

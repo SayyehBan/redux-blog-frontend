@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import blogsReducer from "../reducers/blogSlice";
-import usersReducer from "../reducers/usersSlice";
+import usersReducer, { fetchUsers } from "../reducers/usersSlice";
 
 export const store = configureStore({
     reducer: {
@@ -9,3 +9,4 @@ export const store = configureStore({
         users: usersReducer
     },
 });
+store.dispatch(fetchUsers());

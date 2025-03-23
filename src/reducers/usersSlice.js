@@ -1,25 +1,24 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getAllAuthors } from "../services/authorsServices";
 
-const initialState = [
-    {
-        id: 1,
-        firstName: "کوروش",
-        lastName: " هخامنشی",
-    },
-    {
-        id: 2,
-        firstName: "داریوش",
-        lastName: " هخامنشی",
-    },
-    {
-        id: 3,
-        firstName: "کمبوجیه",
-        lastName: " هخامنشی",
-    },
-];
+export const fetchUsers = createAsyncThunk("/users/fetchUsers", async () => {
+    const response = await getAllAuthors();
+    return response.data;
+});
 const usersSlice = createSlice({
     name: "users",
-    initialState,
-    reducers: {}
+    initialState: [],
+    reducers: {},
+    extraReducers: (builder) => {
+        builder.addCase(fetchUsers.fulfilled, (state, action) => {
+            return action.payload;
+        });
+    },
 })
+export const selectAllUsers = (state) => state.users;
+export const selectUserById = (state, userId) => {
+    const user = state.users.find((user) => user.authorID === userId)
+    return user;
+}
+
 export default usersSlice.reducer;

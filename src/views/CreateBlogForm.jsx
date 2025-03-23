@@ -3,6 +3,7 @@ import HeaderTitle from "../components/HeaderTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { blogAdded } from "../reducers/blogSlice";
 import { useNavigate } from "react-router-dom";
+import { selectAllUsers } from "../reducers/usersSlice";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
@@ -11,7 +12,7 @@ const CreateBlogForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const users = useSelector((state) => state.users);
+  const users = useSelector(selectAllUsers);
 
   const onTitleChange = (e) => {
     setTitle(e.target.value);

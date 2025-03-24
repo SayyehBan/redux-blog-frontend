@@ -31,7 +31,7 @@ const SingleBlogPage = () => {
   };
   return (
     <>
-      <HeaderTitle title={blogId} />
+      <HeaderTitle title={blog.title} />
       <Link to="/" className="btn">
         بازگشت به صفحه اصلی
       </Link>

@@ -7,11 +7,11 @@ import { store } from "./store";
 import { HelmetProvider } from "react-helmet-async";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <HelmetProvider>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </HelmetProvider>
-  </StrictMode>
+  <HelmetProvider>
+    {/* <StrictMode> */}
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+    {/* </StrictMode> */}
+  </HelmetProvider>
 );

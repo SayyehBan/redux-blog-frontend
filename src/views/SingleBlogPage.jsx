@@ -23,7 +23,7 @@ const SingleBlogPage = () => {
   const handleDelete = () => {
     if (blog) {
       if (window.confirm("آیا از حذف این پست اطمینان دارید؟")) {
-        dispatch(blogDeleted({ id: blog.id }));
+        dispatch(blogDeleted({ blogID: blog.blogID }));
 
         navigate("/");
       }
@@ -32,19 +32,18 @@ const SingleBlogPage = () => {
   return (
     <>
       <HeaderTitle title={blog.title} />
-      <Link to="/" className="btn">
-        بازگشت به صفحه اصلی
-      </Link>
+
       <section>
         <article className="blog">
           <h2>{blog.title}</h2>
           <div style={{ marginTop: "10px", marginRight: "20px" }}>
-            <ShowTime timestamp={blog.date} />
-            <ShowAuthor userId={blog.user} />
+            <ShowTime timestamp={blog.createdDate} />
+            &nbsp;
+            <ShowAuthor authorID={blog.authorID} />
           </div>
-          <p className="blog-content">{blog.content}</p>
+          <p className="blog-content">{blog.contents}</p>
           <ReactionButton blog={blog} />
-          <Link to={`/editBlog/${blog.id}`} className="btn">
+          <Link to={`/editBlog/${blog.blogID}`} className="btn">
             ویرایش پست
           </Link>
           &nbsp;

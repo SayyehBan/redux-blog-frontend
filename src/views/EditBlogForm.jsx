@@ -11,13 +11,13 @@ const EditBlogForm = () => {
   const blog = useSelector((state) => selectBlogById(state, blogId));
 
   const [title, setTitle] = useState(blog.title);
-  const [content, setContent] = useState(blog.content);
+  const [contents, setContents] = useState(blog.contents);
   const onTitleChange = (e) => setTitle(e.target.value);
-  const onContentChange = (e) => setContent(e.target.value);
+  const onContentChange = (e) => setContents(e.target.value);
   const handleSubmit = (e) => {
     e.preventDefault();
-    if ((title, content)) {
-      dispatch(blogUpdated({ id: blogId, title, content }));
+    if ((title, contents)) {
+      dispatch(blogUpdated({ id: blogId, title, contents }));
       navigate(`/blogs/${blogId}`);
     }
   };
@@ -49,7 +49,7 @@ const EditBlogForm = () => {
           <textarea
             id="content"
             name="content"
-            value={content}
+            value={contents}
             onChange={onContentChange}
             required
           ></textarea>

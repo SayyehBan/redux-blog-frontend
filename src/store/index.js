@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-
 import blogsReducer from "../reducers/blogSlice";
-import usersReducer, { fetchUsers } from "../reducers/usersSlice";
+import authorsReducer, { fetchAuthor } from "../reducers/authorsSlice";
 
 export const store = configureStore({
     reducer: {
         blogs: blogsReducer,
-        users: usersReducer
+        authors: authorsReducer
     },
 });
-store.dispatch(fetchUsers());
+
+store.dispatch(fetchAuthor());

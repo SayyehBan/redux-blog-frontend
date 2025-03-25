@@ -1,8 +1,8 @@
 import { useSelector } from "react-redux";
-import { selectUserById } from "../reducers/usersSlice";
+import { selectAuthorById } from "../reducers/authorsSlice";
 
-const ShowAuthor = ({ userId }) => {
-  const author = useSelector((state) => selectUserById(state, userId));
+const ShowAuthor = ({ authorID }) => {
+  const author = useSelector((state) => selectAuthorById(state, authorID));
   return (
     <span>
       {author ? author.firstName + " " + author.lastName : "نویسنده نامشخص"}

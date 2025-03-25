@@ -1,101 +1,86 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
-import { sub } from "date-fns-jalali";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getAllBlogs } from "../services/blogsServices";
 
-const initialState =
-{
-    blogs:
-        [
-            {
-                id: nanoid(),
-                date: sub(new Date(), { days: 5, hours: 3, minutes: 10 }).toISOString(),
-                title: "اولین پست",
-                content: "محتوای اولین پست ما ☺️",
-                user: 1,
-                reactions: {
-                    thumbsUp: 0,
-                    hooray: 0,
-                    heart: 0,
-                    rocket: 0,
-                    eyes: 0,
-                },
-            },
-            {
-                id: nanoid(),
-                date: sub(new Date(), { minutes: 5 }).toISOString(),
-                title: "دومین پست",
-                content: "دومین پست ما میباشد درود دنیا 🤗",
-                user: 2,
-                reactions: {
-                    thumbsUp: 0,
-                    hooray: 0,
-                    heart: 0,
-                    rocket: 0,
-                    eyes: 0,
-                },
-            },
-            {
-                id: nanoid(),
-                date: sub(new Date(), { minutes: 1 }).toISOString(),
-                title: "سومین پست",
-                content: "سومین پست ما میباشد درود دنیا 🤗",
-                user: 3,
-                reactions: {
-                    thumbsUp: 0,
-                    hooray: 0,
-                    heart: 0,
-                    rocket: 0,
-                    eyes: 0,
-                },
-            }
-        ],
+const initialState = {
+    blogs: [],
     status: "idle",
     error: null,
-}
+};
+
+export const fetchBlogs = createAsyncThunk("/blogs/fetchBlogs", async () => {
+    const response = await getAllBlogs();
+    return response.data;
+});
+
 const blogsSlice = createSlice({
     name: "blogs",
     initialState: initialState,
     reducers: {
         blogAdded: {
             reducer(state, action) {
-                state.push(action.payload);
+                state.blogs.push(action.payload);
             },
-            prepare(title, content, userId) {
+            prepare(title, contents, authorID) {
                 return {
                     payload: {
-                        id: nanoid(),
-                        date: new Date().toISOString(),
+                        blogID: 5,
+                        createdDate: new Date().toISOString(),
                         title,
-                        content,
-                        user: parseInt(userId)
+                        contents,
+                        authorID: authorID,
                     },
                 };
             },
         },
         blogUpdated: (state, action) => {
-            const { id, title, content } = action.payload;
-            const existingBlog = state.blogs.find((blog) => blog.id === id);
+            const { blogID, title, contents } = action.payload;
+            const existingBlog = state.blogs.find((blog) => blog.blogID === blogID);
             if (existingBlog) {
                 existingBlog.title = title;
-                existingBlog.content = content;
+                existingBlog.contents = contents;
             }
         },
         blogDeleted: (state, action) => {
-            const { id } = action.payload;
-            state = state.blogs.filter((blog) => blog.id !== id);
-            return state;
-
+            const { blogID } = action.payload;
+            state.blogs = state.blogs.filter((blog) => blog.blogID !== blogID);
         },
         reactionAdded: (state, action) => {
             const { blogId, reaction } = action.payload;
-            const existingBlog = state.blogs.find((blog) => blog.id === blogId);
+            const existingBlog = state.blogs.find((blog) => blog.blogID === blogId); // اصلاح id به blogID
             if (existingBlog) {
-                existingBlog.reactions[reaction]++;
+                existingBlog[reaction] = (existingBlog[reaction] || 0) + 1; // اصلاح ساختار reactions
             }
-        }
-    }
+        },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchBlogs.pending, (state, action) => {
+                state.status = "loading";
+            })
+            .addCase(fetchBlogs.fulfilled, (state, action) => {
+                state.status = "completed";
+                state.blogs = action.payload;
+            })
+            .addCase(fetchBlogs.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message;
+            });
+    },
 });
-export const selectAllBlogs = (state) => state.blogs.blogs;
-export const selectBlogById = (state, blogId) =>
-    state.blogs.blogs.find((blog) => blog.id === blogId);
+
+export const selectAllBlogs = (state) => {
+    const blogs = state.blogs.blogs;
+    console.log("Returned blogs from selectAllBlogs:", blogs);
+    return blogs;
+};
+
+export const selectBlogById = (state, blogId) => {
+    console.log("blogId:", blogId);
+    const blog = state.blogs.blogs.find((blog) => blog.blogID === parseInt(blogId));
+    console.log("Returned blog from selectBlogById:", blog);
+    return blog;
+};
+
 export const { blogAdded, blogUpdated, blogDeleted, reactionAdded } = blogsSlice.actions;
+
 export default blogsSlice.reducer;

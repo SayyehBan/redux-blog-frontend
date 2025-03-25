@@ -3,34 +3,34 @@ import HeaderTitle from "../components/HeaderTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { blogAdded } from "../reducers/blogSlice";
 import { useNavigate } from "react-router-dom";
-import { selectAllUsers } from "../reducers/usersSlice";
+import { selectAllAuthors } from "../reducers/authorsSlice";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [userId, setUserId] = useState();
+  const [contents, setContents] = useState("");
+  const [authorID, setAuthorID] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const users = useSelector(selectAllUsers);
+  const authors = useSelector(selectAllAuthors);
 
   const onTitleChange = (e) => {
     setTitle(e.target.value);
   };
   const onContentChange = (e) => {
-    setContent(e.target.value);
+    setContents(e.target.value);
   };
   const onAuthorChange = (e) => {
-    setUserId(e.target.value);
+    setAuthorID(e.target.value);
   };
-  const canSave = [title, content, userId].every(Boolean);
+  const canSave = [title, contents, authorID].every(Boolean);
   const handleSubmitForm = (e) => {
     e.preventDefault();
     if (canSave) {
-      dispatch(blogAdded(title, content, userId));
+      dispatch(blogAdded(title, contents, authorID));
       setTitle("");
-      setContent("");
-      setUserId();
+      setContents("");
+      setAuthorID();
       navigate("/");
     }
   };
@@ -48,11 +48,11 @@ const CreateBlogForm = () => {
           onChange={onTitleChange}
         />
         <label htmlFor="blogAuthor">نویسنده :</label>
-        <select id="blogAuthor" value={userId} onChange={onAuthorChange}>
+        <select id="blogAuthor" value={authorID} onChange={onAuthorChange}>
           <option value="">انتخاب کنید</option>
-          {users.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.firstName} {user.lastName}
+          {authors.map((author) => (
+            <option key={author.authorID} value={author.authorID}>
+              {author.firstName} {author.lastName}
             </option>
           ))}
         </select>
@@ -61,7 +61,7 @@ const CreateBlogForm = () => {
         <textarea
           id="blogContent"
           name="blogContent"
-          value={content}
+          value={contents}
           onChange={onContentChange}
         />
         <button type="button" onClick={handleSubmitForm} disabled={!canSave}>

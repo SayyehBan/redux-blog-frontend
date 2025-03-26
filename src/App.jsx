@@ -1,5 +1,5 @@
 import { miladiToShamsiAndShahanshahi } from "./utilities/PersianDateConverter";
-import BlogsList from "./views/BlogsList";
+import BlogsList from "./views/blog/BlogsList";
 import HeaderTitle from "./components/HeaderTitle";
 
 const App = () => {

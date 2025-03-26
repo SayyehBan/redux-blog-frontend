@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateReaction } from "../reducers/blogSlice";
 
 const reactionEmoji = {

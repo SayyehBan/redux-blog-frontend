@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectAllAuthors } from "../reducers/authorsSlice";
+import { selectAllAuthors } from "../../reducers/authorsSlice";
 import { Link } from "react-router-dom";
 
 const AuthorsList = () => {

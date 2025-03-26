@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import App from "../App";
-import SingleBlogPage from "../views/SingleBlogPage";
-import CreateBlogForm from "../views/CreateBlogForm";
-import EditBlogForm from "../views/EditBlogForm";
-import AuthorsList from "../views/AuthorsList";
+import SingleBlogPage from "../views/blog/SingleBlogPage";
+import CreateBlogForm from "../views/blog/CreateBlogForm";
+import EditBlogForm from "../views/blog/EditBlogForm";
+import AuthorsList from "../views/authors/AuthorsList";
 export const router = createBrowserRouter([
   {
     path: "/",

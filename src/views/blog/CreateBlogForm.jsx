@@ -1,9 +1,9 @@
 import { useState } from "react";
-import HeaderTitle from "../components/HeaderTitle";
+import HeaderTitle from "../../components/HeaderTitle";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewBlog, blogAdded } from "../reducers/blogSlice";
+import { addNewBlog, blogAdded } from "../../reducers/blogSlice";
 import { useNavigate } from "react-router-dom";
-import { selectAllAuthors } from "../reducers/authorsSlice";
+import { selectAllAuthors } from "../../reducers/authorsSlice";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");

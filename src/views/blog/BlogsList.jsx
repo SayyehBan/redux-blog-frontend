@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { miladiToShamsiAndShahanshahi } from "../utilities/PersianDateConverter";
-import { fetchBlogs, selectAllBlogs } from "../reducers/blogSlice";
-import ShowTime from "../components/ShowTime";
-import ShowAuthor from "../components/ShowAuthor";
-import ReactionButton from "../components/ReactionButton";
+import { miladiToShamsiAndShahanshahi } from "../../utilities/PersianDateConverter";
+import { fetchBlogs, selectAllBlogs } from "../../reducers/blogSlice";
+import ShowTime from "../../components/ShowTime";
+import ShowAuthor from "../../components/ShowAuthor";
+import ReactionButton from "../../components/ReactionButton";
 import { useEffect } from "react";
-import Spinner from "../components/Spinner";
+import Spinner from "../../components/Spinner";
 const Blogs = ({ blogs }) => {
   const orderedBlogs = blogs
     .slice()

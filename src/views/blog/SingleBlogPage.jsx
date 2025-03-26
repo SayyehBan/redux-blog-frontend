@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import HeaderTitle from "../components/HeaderTitle";
-import { deleteBlog, selectBlogById } from "../reducers/blogSlice";
-import ShowAuthor from "../components/ShowAuthor";
-import ShowTime from "../components/ShowTime";
-import ReactionButton from "../components/ReactionButton";
+import HeaderTitle from "../../components/HeaderTitle";
+import { deleteBlog, selectBlogById } from "../../reducers/blogSlice";
+import ShowAuthor from "../../components/ShowAuthor";
+import ShowTime from "../../components/ShowTime";
+import ReactionButton from "../../components/ReactionButton";
 
 const SingleBlogPage = () => {
   const { blogID } = useParams();

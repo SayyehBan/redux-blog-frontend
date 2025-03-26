@@ -22,7 +22,7 @@ const ReactionButton = ({ blog }) => {
           type="button"
           className="muted-button reaction-button"
           onClick={() =>
-            dispatch(reactionAdded({ blogId: blog.blogID, reaction: name }))
+            dispatch(reactionAdded({ blogID: blog.blogID, reaction: name }))
           }
         >
           {emoji} {blog[name]}

@@ -7,7 +7,7 @@ import HeaderTitle from "../components/HeaderTitle";
 const EditBlogForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { blogId: blogID } = useParams();
+  const { blogID } = useParams();
   const blog = useSelector((state) => selectBlogById(state, blogID));
 
   const [title, setTitle] = useState(blog.title);

@@ -59,8 +59,8 @@ const blogsSlice = createSlice({
             state.blogs = state.blogs.filter((blog) => blog.blogID !== blogID);
         },
         reactionAdded: (state, action) => {
-            const { blogId, reaction } = action.payload;
-            const existingBlog = state.blogs.find((blog) => blog.blogID === blogId);
+            const { blogID, reaction } = action.payload;
+            const existingBlog = state.blogs.find((blog) => blog.blogID === blogID);
             if (existingBlog) {
                 existingBlog[reaction] = (existingBlog[reaction] || 0) + 1;
             }
@@ -100,9 +100,9 @@ export const selectAllBlogs = (state) => {
     return blogs;
 };
 
-export const selectBlogById = (state, blogId) => {
+export const selectBlogById = (state, blogID) => {
     const blog = state.blogs.blogs.find(
-        (blog) => blog.blogID === parseInt(blogId)
+        (blog) => blog.blogID === parseInt(blogID)
     );
     return blog;
 };

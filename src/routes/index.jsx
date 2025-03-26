@@ -21,11 +21,11 @@ export const router = createBrowserRouter([
         element: <CreateBlogForm />,
       },
       {
-        path: "/blogs/:blogId",
+        path: "/blogs/:blogID",
         element: <SingleBlogPage />,
       },
       {
-        path: "/editBlog/:blogId",
+        path: "/editBlog/:blogID",
         element: <EditBlogForm />,
       },
     ],

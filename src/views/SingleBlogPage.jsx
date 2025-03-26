@@ -7,8 +7,8 @@ import ShowTime from "../components/ShowTime";
 import ReactionButton from "../components/ReactionButton";
 
 const SingleBlogPage = () => {
-  const { blogId } = useParams();
-  const blog = useSelector((state) => selectBlogById(state, blogId));
+  const { blogID } = useParams();
+  const blog = useSelector((state) => selectBlogById(state, blogID));
 
   const navigate = useNavigate();
   const dispatch = useDispatch();

@@ -5,6 +5,7 @@ import SingleBlogPage from "../views/blog/SingleBlogPage";
 import CreateBlogForm from "../views/blog/CreateBlogForm";
 import EditBlogForm from "../views/blog/EditBlogForm";
 import AuthorsList from "../views/authors/AuthorsList";
+import AuthorPage from "../views/authors/AuthorPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "/authors",
         element: <AuthorsList />,
+      },
+      {
+        path: "/authors/:authorID",
+        element: <AuthorPage />,
       },
     ],
   },

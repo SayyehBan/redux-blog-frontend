@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllBlogs } from "../services/blogsServices";
+import { getAllBlogs, insertBlog } from "../services/blogsServices";
 
 const initialState = {
     blogs: [],
@@ -11,6 +11,11 @@ export const fetchBlogs = createAsyncThunk("/blogs/fetchBlogs", async () => {
     const response = await getAllBlogs();
     return response.data;
 });
+export const addNewBlog = createAsyncThunk("/blogs/addNewBlog",
+    async initialBlog => {
+        const response = await insertBlog(initialBlog);
+        return response.data;
+    });
 
 const blogsSlice = createSlice({
     name: "blogs",
@@ -23,11 +28,9 @@ const blogsSlice = createSlice({
             prepare(title, contents, authorID) {
                 return {
                     payload: {
-                        blogID: 5,
-                        createdDate: new Date().toISOString(),
                         title,
                         contents,
-                        authorID: authorID,
+                        authorID,
                     },
                 };
             },
@@ -64,6 +67,9 @@ const blogsSlice = createSlice({
             .addCase(fetchBlogs.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message;
+            })
+            .addCase(addNewBlog.fulfilled, (state, action) => {
+                state.blogs.push(action.payload);
             });
     },
 });
@@ -74,10 +80,13 @@ export const selectAllBlogs = (state) => {
 };
 
 export const selectBlogById = (state, blogId) => {
-    const blog = state.blogs.blogs.find((blog) => blog.blogID === parseInt(blogId));
+    const blog = state.blogs.blogs.find(
+        (blog) => blog.blogID === parseInt(blogId)
+    );
     return blog;
 };
 
-export const { blogAdded, blogUpdated, blogDeleted, reactionAdded } = blogsSlice.actions;
+export const { blogAdded, blogUpdated, blogDeleted, reactionAdded } =
+    blogsSlice.actions;
 
 export default blogsSlice.reducer;

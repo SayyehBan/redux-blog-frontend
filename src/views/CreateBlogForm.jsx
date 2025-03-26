@@ -1,14 +1,15 @@
 import { useState } from "react";
 import HeaderTitle from "../components/HeaderTitle";
 import { useDispatch, useSelector } from "react-redux";
-import { blogAdded } from "../reducers/blogSlice";
+import { addNewBlog, blogAdded } from "../reducers/blogSlice";
 import { useNavigate } from "react-router-dom";
 import { selectAllAuthors } from "../reducers/authorsSlice";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
   const [contents, setContents] = useState("");
-  const [authorID, setAuthorID] = useState();
+  const [authorID, setAuthorID] = useState(0);
+  const [addRequestStatus, setAddRequestStatus] = useState("idle");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,15 +24,23 @@ const CreateBlogForm = () => {
   const onAuthorChange = (e) => {
     setAuthorID(e.target.value);
   };
-  const canSave = [title, contents, authorID].every(Boolean);
-  const handleSubmitForm = (e) => {
+  const canSave =
+    [title, contents, authorID].every(Boolean) && addRequestStatus === "idle";
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
     if (canSave) {
-      dispatch(blogAdded(title, contents, authorID));
-      setTitle("");
-      setContents("");
-      setAuthorID();
-      navigate("/");
+      try {
+        setAddRequestStatus("pending");
+        await dispatch(addNewBlog({ title, contents, authorID }));
+        setTitle("");
+        setContents("");
+        setAuthorID(0);
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setAddRequestStatus("idle");
+      }
     }
   };
   return (

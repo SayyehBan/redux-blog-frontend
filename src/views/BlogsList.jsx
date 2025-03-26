@@ -7,6 +7,29 @@ import ShowAuthor from "../components/ShowAuthor";
 import ReactionButton from "../components/ReactionButton";
 import { useEffect } from "react";
 import Spinner from "../components/Spinner";
+const Blogs = ({ blogs }) => {
+  const orderedBlogs = blogs
+    .slice()
+    .sort((a, b) => b.createdDate.localeCompare(a.createdDate));
+
+  return orderedBlogs.map((blog) => (
+    <article key={blog.blogID} className="blog-excerpt">
+      <h3>{blog.title}</h3>
+      <div style={{ marginTop: "10px", marginRight: "20px" }}>
+        <ShowTime timestamp={blog.createdDate} />
+        <br />
+        {miladiToShamsiAndShahanshahi(blog.createdDate.split("T")[0], 1)}
+        <br />
+        <ShowAuthor authorID={blog.authorID} />
+      </div>
+      <p className="blog-content">{blog.contents.substring(0, 100)}</p>
+      <ReactionButton blog={blog} />
+      <Link to={`/blogs/${blog.blogID}`} className="button muted-button">
+        ادامه مطلب
+      </Link>
+    </article>
+  ));
+};
 
 const BlogsList = () => {
   // تمام هوک‌ها را در بالای کامپوننت و بدون شرط فراخوانی کنید
@@ -27,27 +50,7 @@ const BlogsList = () => {
   if (blogStatus === "loading") {
     content = <Spinner text="در حال بارگذاری..." />;
   } else if (blogStatus === "completed") {
-    const orderedBlogs = blogs
-      .slice()
-      .sort((a, b) => b.createdDate.localeCompare(a.createdDate));
-
-    content = orderedBlogs.map((blog) => (
-      <article key={blog.blogID} className="blog-excerpt">
-        <h3>{blog.title}</h3>
-        <div style={{ marginTop: "10px", marginRight: "20px" }}>
-          <ShowTime timestamp={blog.createdDate} />
-          <br />
-          {miladiToShamsiAndShahanshahi(blog.createdDate.split("T")[0], 1)}
-          <br />
-          <ShowAuthor authorID={blog.authorID} />
-        </div>
-        <p className="blog-content">{blog.contents.substring(0, 100)}</p>
-        <ReactionButton blog={blog} />
-        <Link to={`/blogs/${blog.blogID}`} className="button muted-button">
-          ادامه مطلب
-        </Link>
-      </article>
-    ));
+    content = <Blogs blogs={blogs} />;
   } else if (blogStatus === "failed") {
     content = <div>خطا: {error}</div>;
   }

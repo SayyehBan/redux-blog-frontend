@@ -10,7 +10,6 @@ const AuthorPage = () => {
   );
   const authorBlogs = useSelector((state) => {
     const allBlogs = selectAllBlogs(state);
-    console.log("allBlogs", allBlogs);
     return allBlogs.filter(
       (blog) => parseInt(blog.authorID) === parseInt(authorID)
     );
@@ -31,7 +30,10 @@ const AuthorPage = () => {
         {authorBlogs.length > 0 ? (
           blogTitle
         ) : (
-          <li style={{ listStyleType: "none" }}>نویسنده ما هیچ پستی ندارد</li>
+          <li style={{ listStyleType: "none" }}>
+            {" "}
+            نویسنده ما هیچ پستی تا به الان منتشر نکرده 🤗
+          </li>
         )}
       </ul>
     </section>

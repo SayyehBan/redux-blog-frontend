@@ -7,7 +7,6 @@ export const blogGetAll = async () => {
     return response;
 }
 export const blogInsert = async (blog) => {
-    console.log("insertBlog", blog);
     const url = `${Server_URL}Blogs/Insert`;
     const formData = new FormData();
     formData.append('Title', blog.title);
@@ -23,7 +22,6 @@ export const blogDelete = async (blogID) => {
     return response;
 }
 export const blogUpdate = async (blog) => {
-    console.log("updateBlog", blog);
     const url = `${Server_URL}Blogs/Update`;
     const formData = new FormData();
     formData.append('BlogID', parseInt(blog.blogID));

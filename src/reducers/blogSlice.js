@@ -48,7 +48,6 @@ export const updateReaction = createAsyncThunk("/blogs/updateReaction",
         currentReactions[reaction] = (currentReactions[reaction] || 0) + 1;
 
         const response = await PostReactionsUpdate(currentReactions);
-        console.log("Server response:", response.data); // برای دیباگ
         return response.data;
     }
 );

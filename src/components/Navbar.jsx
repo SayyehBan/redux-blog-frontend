@@ -9,6 +9,7 @@ const Navbar = () => {
         <div className="navContent">
           <div className="navLinks">
             <Link to={"/"}>وبلاگ</Link>
+            <Link to={"/authors"}>نویسندگان</Link>
           </div>
         </div>
       </section>

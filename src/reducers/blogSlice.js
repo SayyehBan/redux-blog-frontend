@@ -70,14 +70,11 @@ const blogsSlice = createSlice({
 
 export const selectAllBlogs = (state) => {
     const blogs = state.blogs.blogs;
-    console.log("Returned blogs from selectAllBlogs:", blogs);
     return blogs;
 };
 
 export const selectBlogById = (state, blogId) => {
-    console.log("blogId:", blogId);
     const blog = state.blogs.blogs.find((blog) => blog.blogID === parseInt(blogId));
-    console.log("Returned blog from selectBlogById:", blog);
     return blog;
 };
 

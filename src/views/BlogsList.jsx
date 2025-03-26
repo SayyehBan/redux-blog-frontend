@@ -6,6 +6,7 @@ import ShowTime from "../components/ShowTime";
 import ShowAuthor from "../components/ShowAuthor";
 import ReactionButton from "../components/ReactionButton";
 import { useEffect } from "react";
+import Spinner from "../components/Spinner";
 
 const BlogsList = () => {
   // تمام هوک‌ها را در بالای کامپوننت و بدون شرط فراخوانی کنید
@@ -25,7 +26,7 @@ const BlogsList = () => {
   let content;
 
   if (blogStatus === "loading") {
-    content = <div>Loading...</div>;
+    content = <Spinner text="در حال بارگذاری..." />;
   } else if (blogStatus === "failed") {
     content = <div>خطا: {error}</div>;
   } else if (!blogs || blogs.length === 0) {

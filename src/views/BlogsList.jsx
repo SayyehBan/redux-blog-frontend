@@ -24,19 +24,14 @@ const BlogsList = () => {
 
   // منطق رندر را جدا کنید
   let content;
-
   if (blogStatus === "loading") {
     content = <Spinner text="در حال بارگذاری..." />;
-  } else if (blogStatus === "failed") {
-    content = <div>خطا: {error}</div>;
-  } else if (!blogs || blogs.length === 0) {
-    content = <div>هیچ پستی برای نمایش وجود ندارد.</div>;
-  } else {
+  } else if (blogStatus === "completed") {
     const orderedBlogs = blogs
       .slice()
       .sort((a, b) => b.createdDate.localeCompare(a.createdDate));
 
-    const renderBlogs = orderedBlogs.map((blog) => (
+    content = orderedBlogs.map((blog) => (
       <article key={blog.blogID} className="blog-excerpt">
         <h3>{blog.title}</h3>
         <div style={{ marginTop: "10px", marginRight: "20px" }}>
@@ -53,23 +48,23 @@ const BlogsList = () => {
         </Link>
       </article>
     ));
-
-    content = (
-      <section className="blog-list">
-        <button
-          className="full-button accent-button"
-          style={{ marginTop: "1em" }}
-          onClick={() => navigate("/blogs/create-blog")}
-        >
-          ساخت پست جدید
-        </button>
-        <h2>لیست پست‌ها</h2>
-        {renderBlogs}
-      </section>
-    );
+  } else if (blogStatus === "failed") {
+    content = <div>خطا: {error}</div>;
   }
 
-  return content;
+  return (
+    <section className="blog-list">
+      <button
+        className="full-button accent-button"
+        style={{ marginTop: "1em" }}
+        onClick={() => navigate("/blogs/create-blog")}
+      >
+        ساخت پست جدید
+      </button>
+      <h2>لیست پست‌ها</h2>
+      {content}
+    </section>
+  );
 };
 
 export default BlogsList;

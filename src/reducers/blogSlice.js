@@ -17,7 +17,6 @@ export const addNewBlog = createAsyncThunk("/blogs/addNewBlog",
         return response.data;
     });
 export const deleteBlog = createAsyncThunk("/blogs/deleteBlog",
-
     async blogID => {
         await blogDelete(blogID);
         return blogID;
@@ -61,9 +60,9 @@ const blogsSlice = createSlice({
         },
         reactionAdded: (state, action) => {
             const { blogId, reaction } = action.payload;
-            const existingBlog = state.blogs.find((blog) => blog.blogID === blogId); // اصلاح id به blogID
+            const existingBlog = state.blogs.find((blog) => blog.blogID === blogId);
             if (existingBlog) {
-                existingBlog[reaction] = (existingBlog[reaction] || 0) + 1; // اصلاح ساختار reactions
+                existingBlog[reaction] = (existingBlog[reaction] || 0) + 1;
             }
         },
     },
@@ -85,16 +84,14 @@ const blogsSlice = createSlice({
             })
             .addCase(deleteBlog.fulfilled, (state, action) => {
                 state.blogs = state.blogs.filter((blog) => blog.blogID !== action.payload);
-
             })
             .addCase(updateBlog.fulfilled, (state, action) => {
-                const { blogID, title, contents } = action.payload;
-                const existingBlog = state.blogs.find((blog) => blog.blogID === blogID);
+                const updatedBlog = action.payload;
+                const existingBlog = state.blogs.find((blog) => blog.blogID === updatedBlog.blogID);
                 if (existingBlog) {
-                    existingBlog.title = title;
-                    existingBlog.contents = contents;
+                    Object.assign(existingBlog, updatedBlog);
                 }
-            })
+            });
     },
 });
 

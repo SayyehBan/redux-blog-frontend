@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { blogUpdated, selectBlogById, updateBlog } from "../reducers/blogSlice";
+import { selectBlogById, updateBlog } from "../reducers/blogSlice";
 import HeaderTitle from "../components/HeaderTitle";
 
 const EditBlogForm = () => {

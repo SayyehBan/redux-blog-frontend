@@ -1,5 +1,5 @@
-import { useDispatch } from "react-redux";
-import { reactionAdded } from "../reducers/blogSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { updateReaction } from "../reducers/blogSlice";
 
 const reactionEmoji = {
   thumbsUp: "👍",
@@ -12,9 +12,8 @@ const reactionEmoji = {
 const ReactionButton = ({ blog }) => {
   const dispatch = useDispatch();
 
-  // فیلتر کردن ری‌اکشن‌هایی که در داده‌های سرور وجود دارند
   const reactionButtons = Object.entries(reactionEmoji)
-    .filter(([name]) => name in blog) // فقط ری‌اکشن‌هایی که در blog هستند
+    .filter(([name]) => name in blog)
     .map(([name, emoji]) => {
       return (
         <button
@@ -22,7 +21,7 @@ const ReactionButton = ({ blog }) => {
           type="button"
           className="muted-button reaction-button"
           onClick={() =>
-            dispatch(reactionAdded({ blogID: blog.blogID, reaction: name }))
+            dispatch(updateReaction({ blogID: blog.blogID, reaction: name }))
           }
         >
           {emoji} {blog[name]}

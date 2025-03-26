@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { blogDelete, blogGetAll, blogInsert, blogUpdate } from "../services/blogsServices";
+import { PostReactionsUpdate } from "../services/postReactionsService";
 
 const initialState = {
     blogs: [],
@@ -21,12 +22,36 @@ export const deleteBlog = createAsyncThunk("/blogs/deleteBlog",
         await blogDelete(blogID);
         return blogID;
     });
-
 export const updateBlog = createAsyncThunk("/blogs/updateBlog",
     async blog => {
         const response = await blogUpdate(blog);
         return response.data;
     });
+export const updateReaction = createAsyncThunk("/blogs/updateReaction",
+    async ({ blogID, reaction }, { getState }) => {
+        const state = getState();
+        const existingBlog = state.blogs.blogs.find((blog) => blog.blogID === blogID);
+
+        if (!existingBlog) {
+            throw new Error("Blog not found");
+        }
+
+        const currentReactions = {
+            blogID,
+            thumbsUp: existingBlog.thumbsUp || 0,
+            hooray: existingBlog.hooray || 0,
+            heart: existingBlog.heart || 0,
+            rocket: existingBlog.rocket || 0,
+            eyes: existingBlog.eyes || 0,
+        };
+
+        currentReactions[reaction] = (currentReactions[reaction] || 0) + 1;
+
+        const response = await PostReactionsUpdate(currentReactions);
+        console.log("Server response:", response.data); // برای دیباگ
+        return response.data;
+    }
+);
 
 const blogsSlice = createSlice({
     name: "blogs",
@@ -91,23 +116,24 @@ const blogsSlice = createSlice({
                 if (existingBlog) {
                     Object.assign(existingBlog, updatedBlog);
                 }
+            })
+            .addCase(updateReaction.fulfilled, (state, action) => {
+                const updatedReactions = action.payload;
+                const existingBlog = state.blogs.find((blog) => blog.blogID === updatedReactions.BlogID || blog.blogID === updatedReactions.blogID);
+                if (existingBlog) {
+                    existingBlog.thumbsUp = updatedReactions.ThumbsUp ?? updatedReactions.thumbsUp ?? existingBlog.thumbsUp;
+                    existingBlog.hooray = updatedReactions.Hooray ?? updatedReactions.hooray ?? existingBlog.hooray;
+                    existingBlog.heart = updatedReactions.Heart ?? updatedReactions.heart ?? existingBlog.heart;
+                    existingBlog.rocket = updatedReactions.Rocket ?? updatedReactions.rocket ?? existingBlog.rocket;
+                    existingBlog.eyes = updatedReactions.Eyes ?? updatedReactions.eyes ?? existingBlog.eyes;
+                }
             });
     },
 });
 
-export const selectAllBlogs = (state) => {
-    const blogs = state.blogs.blogs;
-    return blogs;
-};
+export const selectAllBlogs = (state) => state.blogs.blogs;
+export const selectBlogById = (state, blogID) => state.blogs.blogs.find((blog) => blog.blogID === parseInt(blogID));
 
-export const selectBlogById = (state, blogID) => {
-    const blog = state.blogs.blogs.find(
-        (blog) => blog.blogID === parseInt(blogID)
-    );
-    return blog;
-};
-
-export const { blogAdded, blogUpdated, blogDeleted, reactionAdded } =
-    blogsSlice.actions;
+export const { blogAdded, blogUpdated, blogDeleted, reactionAdded } = blogsSlice.actions;
 
 export default blogsSlice.reducer;

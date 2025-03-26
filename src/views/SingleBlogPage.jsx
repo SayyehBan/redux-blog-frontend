@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import HeaderTitle from "../components/HeaderTitle";
-import { blogDeleted, selectBlogById } from "../reducers/blogSlice";
+import { deleteBlog, selectBlogById } from "../reducers/blogSlice";
 import ShowAuthor from "../components/ShowAuthor";
 import ShowTime from "../components/ShowTime";
 import ReactionButton from "../components/ReactionButton";
@@ -23,7 +23,7 @@ const SingleBlogPage = () => {
   const handleDelete = () => {
     if (blog) {
       if (window.confirm("آیا از حذف این پست اطمینان دارید؟")) {
-        dispatch(blogDeleted({ blogID: blog.blogID }));
+        dispatch(deleteBlog(blog.blogID));
 
         navigate("/");
       }

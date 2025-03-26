@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { blogDelete, blogGetAll, blogInsert } from "../services/blogsServices";
+import { blogDelete, blogGetAll, blogInsert, blogUpdate } from "../services/blogsServices";
 
 const initialState = {
     blogs: [],
@@ -22,6 +22,13 @@ export const deleteBlog = createAsyncThunk("/blogs/deleteBlog",
         await blogDelete(blogID);
         return blogID;
     });
+
+export const updateBlog = createAsyncThunk("/blogs/updateBlog",
+    async blog => {
+        const response = await blogUpdate(blog);
+        return response.data;
+    });
+
 const blogsSlice = createSlice({
     name: "blogs",
     initialState: initialState,
@@ -79,7 +86,15 @@ const blogsSlice = createSlice({
             .addCase(deleteBlog.fulfilled, (state, action) => {
                 state.blogs = state.blogs.filter((blog) => blog.blogID !== action.payload);
 
-            });
+            })
+            .addCase(updateBlog.fulfilled, (state, action) => {
+                const { blogID, title, contents } = action.payload;
+                const existingBlog = state.blogs.find((blog) => blog.blogID === blogID);
+                if (existingBlog) {
+                    existingBlog.title = title;
+                    existingBlog.contents = contents;
+                }
+            })
     },
 });
 

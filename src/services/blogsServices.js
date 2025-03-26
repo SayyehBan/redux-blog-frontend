@@ -22,3 +22,14 @@ export const blogDelete = async (blogID) => {
     const response = axios.delete(url);
     return response;
 }
+export const blogUpdate = async (blog) => {
+    console.log("updateBlog", blog);
+    const url = `${Server_URL}Blogs/Update`;
+    const formData = new FormData();
+    formData.append('BlogID', parseInt(blog.blogID));
+    formData.append('Title', blog.title);
+    formData.append('Contents', blog.contents);
+
+    const response = axios.put(url, formData);
+    return response;
+}

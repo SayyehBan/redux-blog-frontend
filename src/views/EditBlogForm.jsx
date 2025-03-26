@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { blogUpdated, selectBlogById } from "../reducers/blogSlice";
+import { blogUpdated, selectBlogById, updateBlog } from "../reducers/blogSlice";
 import HeaderTitle from "../components/HeaderTitle";
 
 const EditBlogForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { blogId } = useParams();
-  const blog = useSelector((state) => selectBlogById(state, blogId));
+  const { blogId: blogID } = useParams();
+  const blog = useSelector((state) => selectBlogById(state, blogID));
 
   const [title, setTitle] = useState(blog.title);
   const [contents, setContents] = useState(blog.contents);
@@ -17,8 +17,8 @@ const EditBlogForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if ((title, contents)) {
-      dispatch(blogUpdated({ id: blogId, title, contents }));
-      navigate(`/blogs/${blogId}`);
+      dispatch(updateBlog({ blogID, title, contents }));
+      navigate(`/blogs/${blogID}`);
     }
   };
   if (!blog) {

@@ -5,15 +5,11 @@ import { fetchBlogs, selectAllBlogs } from "../../reducers/blogSlice";
 import ShowTime from "../../components/ShowTime";
 import ShowAuthor from "../../components/ShowAuthor";
 import ReactionButton from "../../components/ReactionButton";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import Spinner from "../../components/Spinner";
-const Blogs = ({ blogs }) => {
-  const orderedBlogs = blogs
-    .slice()
-    .sort((a, b) => b.createdDate.localeCompare(a.createdDate));
-
-  return orderedBlogs.map((blog) => (
-    <article key={blog.blogID} className="blog-excerpt">
+let Blog = ({ blog }) => {
+  return (
+    <article className="blog-excerpt">
       <h3>{blog.title}</h3>
       <div style={{ marginTop: "10px", marginRight: "20px" }}>
         <ShowTime timestamp={blog.createdDate} />
@@ -28,9 +24,9 @@ const Blogs = ({ blogs }) => {
         ادامه مطلب
       </Link>
     </article>
-  ));
+  );
 };
-
+Blog = memo(Blog);
 const BlogsList = () => {
   // تمام هوک‌ها را در بالای کامپوننت و بدون شرط فراخوانی کنید
   const blogStatus = useSelector((state) => state.blogs.status);
@@ -50,7 +46,13 @@ const BlogsList = () => {
   if (blogStatus === "loading") {
     content = <Spinner text="در حال بارگذاری..." />;
   } else if (blogStatus === "completed") {
-    content = <Blogs blogs={blogs} />;
+    const orderedBlogs = blogs
+      .slice()
+      .sort((a, b) => b.createdDate.localeCompare(a.createdDate));
+
+    content = orderedBlogs.map((blog) => (
+      <Blog key={blog.blogID} blog={blog} />
+    ));
   } else if (blogStatus === "failed") {
     content = <div>خطا: {error}</div>;
   }

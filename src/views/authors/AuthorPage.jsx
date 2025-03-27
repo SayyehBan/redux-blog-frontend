@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { selectAuthorById } from "../../reducers/authorsSlice";
 import { selectAllBlogs } from "../../reducers/blogSlice";
+import HeaderTitle from "../../components/HeaderTitle";
 
 const AuthorPage = () => {
   const { authorID } = useParams();
@@ -23,6 +24,7 @@ const AuthorPage = () => {
   });
   return (
     <section>
+      <HeaderTitle title={`نویسنده ${author.firstName} ${author.lastName}`} />
       <h2>
         {author.firstName} {author.lastName}
       </h2>

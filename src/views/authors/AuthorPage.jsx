@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { selectAuthorById } from "../../reducers/authorsSlice";
-import { selectAllBlogs } from "../../reducers/blogSlice";
+import { selectBlogByAuthor } from "../../reducers/blogSlice";
 import HeaderTitle from "../../components/HeaderTitle";
 
 const AuthorPage = () => {
@@ -9,12 +9,9 @@ const AuthorPage = () => {
   const author = useSelector((state) =>
     selectAuthorById(state, parseInt(authorID))
   );
-  const authorBlogs = useSelector((state) => {
-    const allBlogs = selectAllBlogs(state);
-    return allBlogs.filter(
-      (blog) => parseInt(blog.authorID) === parseInt(authorID)
-    );
-  });
+  const authorBlogs = useSelector((state) =>
+    selectBlogByAuthor(state, authorID)
+  );
   const blogTitle = authorBlogs.map((blog) => {
     return (
       <li key={blog.blogID}>

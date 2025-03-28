@@ -1,9 +1,13 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import {
     deleteAuthor,
     getAllAuthors,
     insertAuthor,
 } from "../services/authorsServices";
+
+const authorsAdapter = createEntityAdapter({
+    selectId: (author) => author.authorID,
+});
 
 export const fetchAuthor = createAsyncThunk("/author/fetchUsers", async () => {
     const response = await getAllAuthors();
@@ -23,25 +27,21 @@ export const addAuthor = createAsyncThunk(
         return response.data;
     }
 );
+const initialState = authorsAdapter.getInitialState();
 const authorsSlice = createSlice({
     name: "authors",
-    initialState: [],
+    initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(fetchAuthor.fulfilled, (state, action) => {
-            return action.payload;
-        }).addCase(authorDelete.fulfilled, (state, action) => {
-            const authorID = action.payload;
-            return state.filter((author) => author.authorID !== authorID);
-        }).addCase(addAuthor.fulfilled, (state, action) => {
-            state.push(action.payload);
-        });
+        builder.addCase(fetchAuthor.fulfilled, authorsAdapter.setAll)
+            .addCase(authorDelete.fulfilled, authorsAdapter.removeOne)
+            .addCase(addAuthor.fulfilled, authorsAdapter.addOne);
     },
 });
-export const selectAllAuthors = (state) => state.authors;
-export const selectAuthorById = (state, authorID) => {
-    const author = state.authors.find((author) => author.authorID === authorID);
-    return author;
-};
+export const {
+    selectAll: selectAllAuthors,
+    selectById: selectAuthorById,
+    selectIds: selectAuthorIds,
+} = authorsAdapter.getSelectors((state) => state.authors);
 
 export default authorsSlice.reducer;

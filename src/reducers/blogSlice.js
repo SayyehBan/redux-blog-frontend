@@ -1,12 +1,16 @@
-import { createSlice, createAsyncThunk, createSelector } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createSelector, createEntityAdapter } from "@reduxjs/toolkit";
 import { blogDelete, blogGetAll, blogInsert, blogUpdate } from "../services/blogsServices";
 import { PostReactionsUpdate } from "../services/postReactionsService";
 
-const initialState = {
-    blogs: [],
+const blogAdapter = createEntityAdapter({
+    selectId: (blog) => blog.blogID,
+    sortComparer: (a, b) => b.createdDate.localeCompare(a.createdDate),
+
+});
+const initialState = blogAdapter.getInitialState({
     status: "idle",
     error: null,
-};
+});
 
 export const fetchBlogs = createAsyncThunk("/blogs/fetchBlogs", async () => {
     const response = await blogGetAll();
@@ -56,35 +60,10 @@ const blogsSlice = createSlice({
     name: "blogs",
     initialState: initialState,
     reducers: {
-        blogAdded: {
-            reducer(state, action) {
-                state.blogs.push(action.payload);
-            },
-            prepare(title, contents, authorID) {
-                return {
-                    payload: {
-                        title,
-                        contents,
-                        authorID,
-                    },
-                };
-            },
-        },
-        blogUpdated: (state, action) => {
-            const { blogID, title, contents } = action.payload;
-            const existingBlog = state.blogs.find((blog) => blog.blogID === blogID);
-            if (existingBlog) {
-                existingBlog.title = title;
-                existingBlog.contents = contents;
-            }
-        },
-        blogDeleted: (state, action) => {
-            const { blogID } = action.payload;
-            state.blogs = state.blogs.filter((blog) => blog.blogID !== blogID);
-        },
+
         reactionAdded: (state, action) => {
             const { blogID, reaction } = action.payload;
-            const existingBlog = state.blogs.find((blog) => blog.blogID === blogID);
+            const existingBlog = state.entities[blogID];
             if (existingBlog) {
                 existingBlog[reaction] = (existingBlog[reaction] || 0) + 1;
             }
@@ -97,25 +76,16 @@ const blogsSlice = createSlice({
             })
             .addCase(fetchBlogs.fulfilled, (state, action) => {
                 state.status = "completed";
-                state.blogs = action.payload;
+                blogAdapter.upsertMany(state, action.payload);
             })
             .addCase(fetchBlogs.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message;
             })
-            .addCase(addNewBlog.fulfilled, (state, action) => {
-                state.blogs.push(action.payload);
-            })
-            .addCase(deleteBlog.fulfilled, (state, action) => {
-                state.blogs = state.blogs.filter((blog) => blog.blogID !== action.payload);
-            })
-            .addCase(updateBlog.fulfilled, (state, action) => {
-                const updatedBlog = action.payload;
-                const existingBlog = state.blogs.find((blog) => blog.blogID === updatedBlog.blogID);
-                if (existingBlog) {
-                    Object.assign(existingBlog, updatedBlog);
-                }
-            })
+            .addCase(addNewBlog.fulfilled, blogAdapter.addOne)
+            .addCase(deleteBlog.fulfilled, blogAdapter.removeOne)
+            // Handle the fulfilled case for deleteBlog to remove the blog from the state
+            .addCase(updateBlog.fulfilled, blogAdapter.updateOne)
             .addCase(updateReaction.fulfilled, (state, action) => {
                 const updatedReactions = action.payload;
                 const existingBlog = state.blogs.find((blog) => blog.blogID === updatedReactions.BlogID || blog.blogID === updatedReactions.blogID);
@@ -130,9 +100,14 @@ const blogsSlice = createSlice({
     },
 });
 
-export const selectAllBlogs = (state) => state.blogs.blogs;
-export const selectBlogById = (state, blogID) => state.blogs.blogs.find((blog) => blog.blogID === parseInt(blogID));
+// export const selectAllBlogs = (state) => state.blogs.blogs;
 
+// export const selectBlogById = (state, blogID) => state.blogs.blogs.find((blog) => blog.blogID === parseInt(blogID));
+export const {
+    selectAll: selectAllBlogs,
+    selectById: selectBlogById,
+    selectIds: selectBlogIds,
+} = blogAdapter.getSelectors((state) => state.blogs);
 export const selectBlogByAuthor = createSelector(
     [selectAllBlogs, (state, authorID) => authorID],
     (blogs, authorID) => blogs.filter((blog) => parseInt(blog.authorID) === parseInt(authorID))

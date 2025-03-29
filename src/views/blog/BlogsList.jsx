@@ -1,12 +1,11 @@
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { miladiToShamsiAndShahanshahi } from "../../utilities/PersianDateConverter";
-import { fetchBlogs, selectAllBlogs } from "../../reducers/blogSlice";
 import ShowTime from "../../components/ShowTime";
 import ShowAuthor from "../../components/ShowAuthor";
 import ReactionButton from "../../components/ReactionButton";
-import { memo, useEffect } from "react";
 import Spinner from "../../components/Spinner";
+import { useGetBlogsQuery } from "../../api/apiSlice";
+import { useMemo } from "react";
 let Blog = ({ blog }) => {
   return (
     <article className="blog-excerpt">
@@ -26,34 +25,33 @@ let Blog = ({ blog }) => {
     </article>
   );
 };
-Blog = memo(Blog);
 const BlogsList = () => {
-  // تمام هوک‌ها را در بالای کامپوننت و بدون شرط فراخوانی کنید
-  const blogStatus = useSelector((state) => state.blogs.status);
-  const error = useSelector((state) => state.blogs.error);
-  const blogs = useSelector(selectAllBlogs);
-  const dispatch = useDispatch();
+  const {
+    data: blogs = [],
+    error,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useGetBlogsQuery();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (blogStatus === "idle") {
-      dispatch(fetchBlogs());
+  const sortedBlogs = useMemo(() => {
+    if (blogs) {
+      return [...blogs].sort((a, b) => {
+        return new Date(b.createdDate) - new Date(a.createdDate);
+      });
     }
-  }, [blogStatus, dispatch]);
+    return [];
+  }, [blogs]);
+  // استفاده از useMemo برای بهینه‌سازی
 
   // منطق رندر را جدا کنید
   let content;
-  if (blogStatus === "loading") {
+  if (isLoading) {
     content = <Spinner text="در حال بارگذاری..." />;
-  } else if (blogStatus === "completed") {
-    const orderedBlogs = blogs
-      .slice()
-      .sort((a, b) => b.createdDate.localeCompare(a.createdDate));
-
-    content = orderedBlogs.map((blog) => (
-      <Blog key={blog.blogID} blog={blog} />
-    ));
-  } else if (blogStatus === "failed") {
+  } else if (isSuccess) {
+    content = sortedBlogs.map((blog) => <Blog key={blog.blogID} blog={blog} />);
+  } else if (isError) {
     content = <div>خطا: {error}</div>;
   }
 

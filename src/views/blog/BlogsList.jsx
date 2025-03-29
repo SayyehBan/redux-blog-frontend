@@ -32,6 +32,7 @@ const BlogsList = () => {
     isLoading,
     isSuccess,
     isError,
+    refetch,
   } = useGetBlogsQuery();
   const navigate = useNavigate();
 
@@ -65,6 +66,19 @@ const BlogsList = () => {
         ساخت پست جدید
       </button>
       <h2>لیست پست‌ها</h2>
+      <button
+        className="refresh-button"
+        onClick={refetch}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "1.5em",
+        }}
+        title="بروزرسانی"
+      >
+        🔄
+      </button>
       {content}
     </section>
   );

@@ -7,10 +7,16 @@ export const apiSlice = createApi({
     endpoints: (builder) => ({
         getBlogs: builder.query({
             query: () => "Blogs/GetAll",
-            providesTags: ["Blogs"], // مشخص کردن اینکه این endpoint کش را فراهم می‌کند
+            providesTags: (result = [], error, arg) => [
+                ...result.map(({ blogID }) =>
+                    ({ type: "Blogs", id: blogID })),
+                "Blogs"],
         }),
         getBlog: builder.query({
             query: (blogID) => `Blogs/FindID?BlogID=${blogID}`,
+            providesTags: (result, error, arg) => [
+                { type: "Blogs", id: arg },
+            ]
         }),
         addNewBlog: builder.mutation({
             query: (blog) => {
@@ -24,21 +30,31 @@ export const apiSlice = createApi({
                     body: formData,
                 };
             },
-            invalidatesTags: ["Blogs"], // کش را بعد از اضافه کردن بلاگ جدید نامعتبر می‌کند
-            async onQueryStarted(blog, { dispatch, queryFulfilled }) {
-                try {
-                    const { data: newBlog } = await queryFulfilled;
-                    dispatch(
-                        apiSlice.util.updateQueryData("getBlogs", undefined, (draft) => {
-                            draft.push(newBlog); // اضافه کردن بلاگ جدید به کش
-                        })
-                    );
-                } catch (error) {
-                    console.error("Error updating cache:", error);
-                }
+            invalidatesTags: ["Blogs"],
+        }),
+        editBlog: builder.mutation({
+            query: (blog) => {
+                const formData = new FormData();
+                formData.append("BlogID", parseInt(blog.blogID));
+                formData.append("Title", blog.title);
+                formData.append("Contents", blog.contents);
+                return {
+                    url: "Blogs/Update",
+                    method: "PUT",
+                    body: formData,
+                };
             },
+            invalidatesTags: (result, error, arg) => [
+                { type: "Blogs", id: arg.blogID },
+            ],
+
         }),
     }),
 });
 
-export const { useGetBlogsQuery, useGetBlogQuery, useAddNewBlogMutation } = apiSlice;
+export const {
+    useGetBlogsQuery,
+    useGetBlogQuery,
+    useAddNewBlogMutation,
+    useEditBlogMutation,
+} = apiSlice;

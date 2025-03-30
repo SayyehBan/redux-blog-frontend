@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { updateReaction } from "../reducers/blogSlice";
+import { useUpdatedReactionsMutation } from "../api/apiSlice";
 
 const reactionEmoji = {
   thumbsUp: "👍",
@@ -10,7 +11,7 @@ const reactionEmoji = {
 };
 
 const ReactionButton = ({ blog }) => {
-  const dispatch = useDispatch();
+  const [UpdatedReactions] = useUpdatedReactionsMutation();
 
   const reactionButtons = Object.entries(reactionEmoji)
     .filter(([name]) => name in blog)
@@ -21,7 +22,7 @@ const ReactionButton = ({ blog }) => {
           type="button"
           className="muted-button reaction-button"
           onClick={() =>
-            dispatch(updateReaction({ blogID: blog.blogID, reaction: name }))
+            UpdatedReactions({ blogID: blog.blogID, reaction: name })
           }
         >
           {emoji} {blog[name]}

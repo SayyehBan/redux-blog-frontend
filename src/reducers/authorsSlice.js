@@ -1,53 +1,45 @@
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+import {
+    createEntityAdapter,
+    createSelector,
+    createSlice,
+} from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
+
+const authorsAdapter = createEntityAdapter({
+    selectId: (author) => author.authorID,
+});
+
+const initialState = authorsAdapter.getInitialState();
 
 export const extendedAuthorsApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAuthors: builder.query({
             query: () => "Authors/GetAll",
-            providesTags: ["Authors"],
+            transformResponse: (responseData) => {
+                return authorsAdapter.setAll(initialState, responseData);
+            },
         }),
-        addNewAuthor: builder.mutation({
-            query: (initialAuthor) => ({
-                url: "Authors/Insert",
-                method: "POST",
-                body: {
-                    ...initialAuthor,
-                },
-            }),
-            invalidatesTags: ["Authors"],
-        }),
-        deleteAuthor: builder.mutation({
-            query: ({ authorID }) => ({
-                url: `Authors/Delete?AuthorID=${authorID}`,
-                method: "DELETE",
-            }),
-            invalidatesTags: ["Authors"],
-        }),
+
     }),
 });
-const emptyAuthors = [];
 export const selectAuthorsResult = extendedAuthorsApiSlice.endpoints.getAuthors.select();
-
-export const selectAllAuthors = createSelector(
-    selectAuthorsResult,
-    (authorsResult) => authorsResult?.data ?? emptyAuthors
-);
-
-export const selectAuthorById = createSelector(
-    [selectAllAuthors, (_, authorID) => authorID],
-    (authors, authorID) => authors.find((author) => author.authorID === authorID)
-);
 
 const authorsSlice = createSlice({
     name: "authors",
-    initialState: emptyAuthors,
+    initialState,
     reducers: {},
 });
-
+const selectAuthorsData = createSelector(
+    selectAuthorsResult,
+    (authorsResult) => authorsResult.data
+);
+export const {
+    selectAll: selectAllAuthors,
+    selectById: selectAuthorById,
+} = authorsAdapter.getSelectors(
+    (state) => selectAuthorsData(state) ?? initialState
+);
 export const {
     useGetAuthorsQuery,
-    useAddNewAuthorMutation,
-    useDeleteAuthorMutation,
 } = extendedAuthorsApiSlice;
 export default authorsSlice.reducer;

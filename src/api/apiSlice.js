@@ -56,24 +56,54 @@ export const apiSlice = createApi({
             ],
         }),
         UpdatedReactions: builder.mutation({
-            query: ({ blogID, reaction }) => {
+            async queryFn({ blogID, reaction }, { getState }, _, baseQuery) {
+                const state = getState();
+                const existingBlog = state.api.queries["getBlogs(undefined)"]?.data?.find((blog) => blog.blogID === blogID);
+
+                if (!existingBlog) {
+                    return { error: { status: 404, message: "Blog not found" } };
+                }
+
+                // مقدار قبلی واکنش‌ها
+                const previousReactions = {
+                    thumbsUp: existingBlog.thumbsUp || 0,
+                    hooray: existingBlog.hooray || 0,
+                    heart: existingBlog.heart || 0,
+                    rocket: existingBlog.rocket || 0,
+                    eyes: existingBlog.eyes || 0,
+                };
+
+                // مقدار جدید
+                const updatedReactions = {
+                    ...previousReactions,
+                    [reaction]: (previousReactions[reaction] || 0) + 1,
+                };
+
+                // آماده‌سازی داده‌ها برای ارسال
                 const formData = new FormData();
-                formData.append('BlogID', parseInt(blogID) || 0);
-                formData.append('ThumbsUp', parseInt(reaction.thumbsUp) || 0);
-                formData.append('Hooray', parseInt(reaction.hooray) || 0);
-                formData.append('Heart', parseInt(reaction.heart) || 0);
-                formData.append('Rocket', parseInt(reaction.rocket) || 0);
-                formData.append('Eyes', parseInt(reaction.eyes) || 0);
-                return {
+                formData.append("BlogID", blogID);
+                formData.append("ThumbsUp", updatedReactions.thumbsUp);
+                formData.append("Hooray", updatedReactions.hooray);
+                formData.append("Heart", updatedReactions.heart);
+                formData.append("Rocket", updatedReactions.rocket);
+                formData.append("Eyes", updatedReactions.eyes);
+
+                // ارسال درخواست PUT به سرور
+                const result = await baseQuery({
                     url: "PostReactions/Update",
                     method: "PUT",
                     body: formData,
-                };
+                });
+
+                if (result.error) {
+                    return { error: result.error };
+                }
+
+                return { data: updatedReactions };
             },
-            invalidatesTags: (result, error, arg) => [
-                { type: "Blogs", id: arg.blogID },
-            ],
+            invalidatesTags: (result, error, arg) => [{ type: "Blogs", id: arg.blogID }, "Blogs"],
         }),
+
     }),
 });
 

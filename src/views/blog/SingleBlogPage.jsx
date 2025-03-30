@@ -15,7 +15,7 @@ const SingleBlogPage = () => {
   const handleDelete = async () => {
     if (blog) {
       if (window.confirm("آیا از حذف این پست اطمینان دارید؟")) {
-        await deleteBlog(blogID).unwrap();
+        await deleteBlog(blogID);
 
         navigate("/");
       }

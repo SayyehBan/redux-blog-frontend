@@ -1,9 +1,6 @@
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import {
-  selectAuthorById,
-  useGetAuthorsQuery,
-} from "../../reducers/authorsSlice";
+import { selectAuthorById } from "../../reducers/authorsSlice";
 import HeaderTitle from "../../components/HeaderTitle";
 import { useMemo } from "react";
 import { createSelector } from "@reduxjs/toolkit";
@@ -34,8 +31,6 @@ const AuthorPage = () => {
     }
     return [];
   }, [blogsData, authorID, selectBlogsByAuthor]);
-
-  console.log("authorBlogs", authorBlogs);
 
   const blogTitle = authorBlogs.map((blog) => {
     return (

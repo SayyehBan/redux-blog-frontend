@@ -18,8 +18,28 @@ export const extendedAuthorsApiSlice = apiSlice.injectEndpoints({
             transformResponse: (responseData) => {
                 return authorsAdapter.setAll(initialState, responseData);
             },
+            providesTags: ["Authors"],
         }),
-
+        addNewAuthor: builder.mutation({
+            query: (author) => {
+                const formData = new FormData();
+                formData.append('FirstName', author.firstName);
+                formData.append('LastName', author.lastName);
+                return {
+                    url: "Authors/Insert",
+                    method: "POST",
+                    body: formData,
+                };
+            },
+            invalidatesTags: ["Authors"],
+        }),
+        deleteAuthor: builder.mutation({
+            query: (authorID) => ({
+                url: `Authors/Delete?AuthorID=${authorID}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Authors"],
+        }),
     }),
 });
 export const selectAuthorsResult = extendedAuthorsApiSlice.endpoints.getAuthors.select();
@@ -41,5 +61,7 @@ export const {
 );
 export const {
     useGetAuthorsQuery,
+    useAddNewAuthorMutation,
+    useDeleteAuthorMutation,
 } = extendedAuthorsApiSlice;
 export default authorsSlice.reducer;

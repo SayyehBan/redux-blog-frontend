@@ -1,5 +1,3 @@
-import { useDispatch } from "react-redux";
-import { updateReaction } from "../reducers/blogSlice";
 import { useUpdatedReactionsMutation } from "../api/apiSlice";
 
 const reactionEmoji = {
@@ -11,6 +9,7 @@ const reactionEmoji = {
 };
 
 const ReactionButton = ({ blog }) => {
+  console.log("blog", blog);
   const [UpdatedReactions] = useUpdatedReactionsMutation();
 
   const reactionButtons = Object.entries(reactionEmoji)

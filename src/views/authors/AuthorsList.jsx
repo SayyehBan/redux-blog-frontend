@@ -1,9 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addAuthor,
-  authorDelete,
-  selectAllAuthors,
-} from "../../reducers/authorsSlice";
+import { useSelector } from "react-redux";
+import { selectAllAuthors } from "../../reducers/authorsSlice";
 import { Link } from "react-router-dom";
 import HeaderTitle from "../../components/HeaderTitle";
 import { useState } from "react";
@@ -11,7 +7,7 @@ import { useState } from "react";
 const AuthorsList = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const onFirstNameChange = (e) => {
     setFirstName(e.target.value);
   };
@@ -19,22 +15,22 @@ const AuthorsList = () => {
     setLastName(e.target.value);
   };
   const canSave = [firstName, lastName].every(Boolean);
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-    if (canSave) {
-      dispatch(
-        addAuthor({
-          firstName: firstName,
-          lastName: lastName,
-        })
-      );
-      setFirstName("");
-      setLastName("");
-    }
-  };
-  const handleDeleteAuthor = (authorID) => {
-    dispatch(authorDelete(authorID));
-  };
+  // const handleSubmitForm = (e) => {
+  //   e.preventDefault();
+  //   if (canSave) {
+  //     dispatch(
+  //       addAuthor({
+  //         firstName: firstName,
+  //         lastName: lastName,
+  //       })
+  //     );
+  //     setFirstName("");
+  //     setLastName("");
+  //   }
+  // };
+  // const handleDeleteAuthor = (authorID) => {
+  //   dispatch(authorDelete(authorID));
+  // };
   const authors = useSelector(selectAllAuthors);
   const renderedAuthors = authors.map((author) => (
     <li key={author.authorID}>
@@ -42,12 +38,12 @@ const AuthorsList = () => {
         {author.firstName} {author.lastName}
       </Link>
       &nbsp;
-      <Link
+      {/* <Link
         style={{ marginRight: "10px", color: "tomato" }}
         onClick={() => handleDeleteAuthor(author.authorID)}
       >
         &otimes;
-      </Link>
+      </Link> */}
     </li>
   ));
   return (
@@ -72,7 +68,11 @@ const AuthorsList = () => {
             onChange={onLastNameChange}
           />
           <p />
-          <button type="submit" disabled={!canSave} onClick={handleSubmitForm}>
+          <button
+            type="submit"
+            disabled={!canSave}
+            // onClick={handleSubmitForm}
+          >
             افزودن نویسنده
           </button>
         </form>

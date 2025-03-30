@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import blogsReducer from "../reducers/blogSlice";
-import authorsReducer, { fetchAuthor } from "../reducers/authorsSlice";
+import authorsReducer, { extendedAuthorsApiSlice } from "../reducers/authorsSlice";
 import { apiSlice } from "../api/apiSlice";
 
 export const store = configureStore({
@@ -14,4 +14,5 @@ export const store = configureStore({
     devTools: process.env.NODE_ENV !== "production",
 });
 
-store.dispatch(fetchAuthor());
+// store.dispatch(fetchAuthor());
+store.dispatch(extendedAuthorsApiSlice.endpoints.getAuthors.initiate());

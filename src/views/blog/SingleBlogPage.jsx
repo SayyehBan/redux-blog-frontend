@@ -1,18 +1,27 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import HeaderTitle from "../../components/HeaderTitle";
-import { deleteBlog } from "../../reducers/blogSlice";
 import ShowAuthor from "../../components/ShowAuthor";
 import ShowTime from "../../components/ShowTime";
 import ReactionButton from "../../components/ReactionButton";
-import { useGetBlogQuery } from "../../api/apiSlice";
+import { useDeleteBlogMutation, useGetBlogQuery } from "../../api/apiSlice";
 import Spinner from "../../components/Spinner";
 
 const SingleBlogPage = () => {
   const { blogID } = useParams();
 
   const { data: blog, isFetching, isSuccess } = useGetBlogQuery(blogID);
-
+  const [deleteBlog] = useDeleteBlogMutation();
   const navigate = useNavigate();
+  const handleDelete = async () => {
+    if (blog) {
+      if (window.confirm("آیا از حذف این پست اطمینان دارید؟")) {
+        await deleteBlog(blogID).unwrap();
+
+        navigate("/");
+      }
+    }
+  };
+
   if (!blog) {
     return (
       <>
@@ -40,21 +49,12 @@ const SingleBlogPage = () => {
           ویرایش پست
         </Link>
         &nbsp;
-        {/* <button onClick={handleDelete} className="btn btn-danger">
+        <button onClick={handleDelete} className="btn btn-danger">
           حذف پست
-        </button> */}
+        </button>
       </article>
     );
   }
-  const handleDelete = () => {
-    if (blog) {
-      if (window.confirm("آیا از حذف این پست اطمینان دارید؟")) {
-        // dispatch(deleteBlog(blog.blogID));
-
-        navigate("/");
-      }
-    }
-  };
   return (
     <>
       <HeaderTitle title={blog.title} />

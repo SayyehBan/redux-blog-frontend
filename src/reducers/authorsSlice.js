@@ -1,47 +1,53 @@
-import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import {
-    deleteAuthor,
-    getAllAuthors,
-    insertAuthor,
-} from "../services/authorsServices";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { apiSlice } from "../api/apiSlice";
 
-const authorsAdapter = createEntityAdapter({
-    selectId: (author) => author.authorID,
+export const extendedAuthorsApiSlice = apiSlice.injectEndpoints({
+    endpoints: (builder) => ({
+        getAuthors: builder.query({
+            query: () => "Authors/GetAll",
+            providesTags: ["Authors"],
+        }),
+        addNewAuthor: builder.mutation({
+            query: (initialAuthor) => ({
+                url: "Authors/Insert",
+                method: "POST",
+                body: {
+                    ...initialAuthor,
+                },
+            }),
+            invalidatesTags: ["Authors"],
+        }),
+        deleteAuthor: builder.mutation({
+            query: ({ authorID }) => ({
+                url: `Authors/Delete?AuthorID=${authorID}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Authors"],
+        }),
+    }),
 });
+const emptyAuthors = [];
+export const selectAuthorsResult = extendedAuthorsApiSlice.endpoints.getAuthors.select();
 
-export const fetchAuthor = createAsyncThunk("/author/fetchUsers", async () => {
-    const response = await getAllAuthors();
-    return response.data;
-});
-export const authorDelete = createAsyncThunk(
-    "/author/deleteAuthor",
-    async (authorID) => {
-        await deleteAuthor(authorID);
-        return authorID;
-    }
+export const selectAllAuthors = createSelector(
+    selectAuthorsResult,
+    (authorsResult) => authorsResult?.data ?? emptyAuthors
 );
-export const addAuthor = createAsyncThunk(
-    "/author/addAuthor",
-    async (author) => {
-        const response = await insertAuthor(author);
-        return response.data;
-    }
+
+export const selectAuthorById = createSelector(
+    [selectAllAuthors, (_, authorID) => authorID],
+    (authors, authorID) => authors.find((author) => author.authorID === authorID)
 );
-const initialState = authorsAdapter.getInitialState();
+
 const authorsSlice = createSlice({
     name: "authors",
-    initialState,
+    initialState: emptyAuthors,
     reducers: {},
-    extraReducers: (builder) => {
-        builder.addCase(fetchAuthor.fulfilled, authorsAdapter.setAll)
-            .addCase(authorDelete.fulfilled, authorsAdapter.removeOne)
-            .addCase(addAuthor.fulfilled, authorsAdapter.addOne);
-    },
 });
-export const {
-    selectAll: selectAllAuthors,
-    selectById: selectAuthorById,
-    selectIds: selectAuthorIds,
-} = authorsAdapter.getSelectors((state) => state.authors);
 
+export const {
+    useGetAuthorsQuery,
+    useAddNewAuthorMutation,
+    useDeleteAuthorMutation,
+} = extendedAuthorsApiSlice;
 export default authorsSlice.reducer;

@@ -9,7 +9,6 @@ const reactionEmoji = {
 };
 
 const ReactionButton = ({ blog }) => {
-  console.log("blog", blog);
   const [UpdatedReactions] = useUpdatedReactionsMutation();
 
   const reactionButtons = Object.entries(reactionEmoji)

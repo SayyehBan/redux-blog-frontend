@@ -15,8 +15,10 @@ export const apiSlice = createApi({
         }),
         getBlog: builder.query({
             query: (blogID) => `Blogs/FindID?BlogID=${blogID}`,
-            providesTags: (result, error, arg) => [{ type: "Blogs", id: arg }],
-
+            providesTags: (result, error, arg) => [
+                { type: "Blogs", id: arg },
+                "Blogs",
+            ],
         }),
         addNewBlog: builder.mutation({
             query: (blog) => {
@@ -46,6 +48,7 @@ export const apiSlice = createApi({
             },
             invalidatesTags: (result, error, arg) => [
                 { type: "Blogs", id: arg.blogID },
+                "Blogs",
             ],
         }),
         deleteBlog: builder.mutation({
@@ -55,18 +58,22 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: (result, error, arg) => [
                 { type: "Blogs", id: arg.blogID },
+                "Blogs",
             ],
         }),
         UpdatedReactions: builder.mutation({
             async queryFn({ blogID, reaction }, { getState }, _, baseQuery) {
                 const state = getState();
-                const existingBlog = state.api.queries["getBlogs(undefined)"]?.data?.find((blog) => blog.blogID === blogID);
+                const existingBlog =
+                    state.api.queries[`getBlog("${blogID}")`]?.data ||
+                    state.api.queries["getBlogs(undefined)"]?.data?.find(
+                        (blog) => blog.blogID === blogID
+                    );
 
                 if (!existingBlog) {
                     return { error: { status: 404, message: "Blog not found" } };
                 }
 
-                // مقدار قبلی واکنش‌ها
                 const previousReactions = {
                     thumbsUp: existingBlog.thumbsUp || 0,
                     hooray: existingBlog.hooray || 0,
@@ -75,13 +82,11 @@ export const apiSlice = createApi({
                     eyes: existingBlog.eyes || 0,
                 };
 
-                // مقدار جدید
                 const updatedReactions = {
                     ...previousReactions,
                     [reaction]: (previousReactions[reaction] || 0) + 1,
                 };
 
-                // آماده‌سازی داده‌ها برای ارسال
                 const formData = new FormData();
                 formData.append("BlogID", blogID);
                 formData.append("ThumbsUp", updatedReactions.thumbsUp);
@@ -90,7 +95,6 @@ export const apiSlice = createApi({
                 formData.append("Rocket", updatedReactions.rocket);
                 formData.append("Eyes", updatedReactions.eyes);
 
-                // ارسال درخواست PUT به سرور
                 const result = await baseQuery({
                     url: "PostReactions/Update",
                     method: "PUT",
@@ -103,9 +107,11 @@ export const apiSlice = createApi({
 
                 return { data: updatedReactions };
             },
-            invalidatesTags: (result, error, arg) => [{ type: "Blogs", id: arg.blogID }, "Blogs"],
+            invalidatesTags: (result, error, arg) => [
+                { type: "Blogs", id: arg.blogID },
+                "Blogs",
+            ],
         }),
-
     }),
 });
 
